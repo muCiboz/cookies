@@ -1,10 +1,9 @@
-//freelanceRegister
+//freelancerRegister
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
 
 const CreateFreelancer = () => {
     const router = useRouter()
@@ -15,11 +14,8 @@ const CreateFreelancer = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // if (!fullName || !email || !password) {
-        //     setError("All fields are necessary")
-        //     return;
-        // }
-        if(password.length < 8 ){
+        
+        if (password.length < 8) {
             setError("Password must be 8 or more characters");
             return;
         }
@@ -31,14 +27,14 @@ const CreateFreelancer = () => {
                     "Content-Type": "application/json"
                 },
                 body:JSON.stringify({email})
-            })
-            const user = await resUserExists.json()
+            });
+
+            const user = await resUserExists.json();
 
             if (user.user !== null) {
-                setError("User Already Exists")
+                setError("User Already Exists");
                 return;
             }
-
 
             const res = await fetch('/api/register', {
                 method: "POST",
@@ -46,29 +42,28 @@ const CreateFreelancer = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    fullName, email, password
+                    fullName, email, password, type: 'freelancer' // Tipi belirtiyoruz
                 })
-            })
+            });
+
             if (res.ok) {
-                e.target.reset()
-                router.push("/login")
+                e.target.reset();
+                router.push("/login");
             } else {
-                console.log("user registiration failed")
+                console.log("user registration failed");
             }
         } catch (error) {
-            console.log("error during registiration: ", error);
-
+            console.log("error during registration: ", error);
         }
     };
+
     return (
         <div className='flex items-center justify-center h-screen w-full'>
-
             <motion.div
                 initial={{ y: '-100vw' }}
                 animate={{ y: 0 }}
                 transition={{ type: 'spring', stiffness: 120 }}
                 className='w-[60%] h-[60%] border border-slate-400 rounded-2xl shadow-slate-500 relative shadow flex flex-col justify-between p-5 items-center'>
-
                 <form onSubmit={handleSubmit} className="w-2/3">
                     <h2 className="text-3xl mb-4 font-bold text-center">Sign Up to find work you love</h2>
                     <div className="mb-4">
@@ -108,23 +103,18 @@ const CreateFreelancer = () => {
                         Sign Up
                     </button>
                     <div>
-                        {/* already */}
                         <h1 className='text-sm text-center'>Already have an account? <button onClick={() => { router.push('/login') }} className=' underline'>Log in</button></h1>
                     </div>
                     {error && (
                         <div className='bg-red-500 mt-2 px-4 py-2 text-xl rounded-md flex justify-center items-center w-2/3 mx-auto animate-pulse'>
                             {error}
                         </div>
-                    )
-
-                    }
+                    )}
                 </form>
                 <Link href={"/firstPage"} className="bg-gray-700 text-white px-8 py-2 mt-3 rounded-md">Go back</Link>
-
-
             </motion.div>
         </div>
-    )
+    );
 }
 
-export default CreateFreelancer
+export default CreateFreelancer;
